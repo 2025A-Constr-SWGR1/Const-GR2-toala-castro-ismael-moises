@@ -1,0 +1,49 @@
+name: Build Java WebApp + Docker
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: 1234
+          MYSQL_DATABASE: javaweb
+          MYSQL_USER: root
+          MYSQL_PASSWORD: 1234
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+    - name: Clonar el repositorio
+      uses: actions/checkout@v3
+
+    - name: Configurar Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    - name: Compilar con Maven
+      run: mvn -B package --file pom.xml
+
+    - name: Construir imagen de la app (Tomcat + WAR)
+      run: docker build -t policampus-webapp -f Webapp.Dockerfile .
+
+    - name: Construir imagen de la base de datos
+      run: docker build -t policampus-db -f Docker-database .
+
+    - name: Verificar imágenes
+      run: docker images

@@ -1,0 +1,27 @@
+name: Java Lint Checkstyle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar el repositorio
+      uses: actions/checkout@v3
+
+    - name: Configurar Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    - name: Instalar dependencias (sin ejecutar tests)
+      run: mvn install -DskipTests
+
+    - name: Ejecutar Checkstyle
+      run: mvn checkstyle:check
