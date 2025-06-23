@@ -1,0 +1,22 @@
+# Node.js
+node_modules/
+
+# Salida de herramientas
+dist/
+build/
+coverage/
+.vitest/
+
+# Archivos de entorno
+.env
+.env.*
+
+# Archivos del sistema/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
